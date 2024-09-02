@@ -256,7 +256,7 @@ def train(opt, train_loader, test_loader, test_vis_loader, board, tocg, generato
 
                 # forward
                 flow_list, fake_segmap, _, warped_clothmask_paired = tocg(
-                    input1, input2)
+                    opt, input1, input2)
 
                 # warped cloth mask one hot
                 warped_cm_onehot = torch.FloatTensor(
@@ -486,7 +486,7 @@ def train(opt, train_loader, test_loader, test_vis_loader, board, tocg, generato
 
                     # forward
                     flow_list, fake_segmap, _, warped_clothmask_paired = tocg(
-                        input1, input2)
+                        opt, input1, input2)
 
                     # warped cloth mask one hot
                     warped_cm_onehot = torch.FloatTensor(
@@ -752,7 +752,7 @@ def main():
         tocg = ConditionGenerator(opt, input1_nc=input1_nc, input2_nc=input2_nc,
                                   output_nc=13, ngf=96, norm_layer=nn.BatchNorm2d)
         # Load Checkpoint
-        load_checkpoint(tocg, opt.tocg_checkpoint)
+        load_checkpoint(tocg, opt.tocg_checkpoint, opt)
 
     # Generator model
     generator = SPADEGenerator(opt, 3+3+3)
