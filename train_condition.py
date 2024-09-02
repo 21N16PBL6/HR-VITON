@@ -276,7 +276,7 @@ def train(opt, train_loader, test_loader, val_loader, board, tocg, D):
             for i in range(len(flow_list)-1):
                 flow = flow_list[i]
                 N, fH, fW, _ = flow.size()
-                grid = mkgrid(N, iH, iW)
+                grid = mkgrid(N, iH, iW, opt)
                 flow = F.interpolate(flow.permute(
                     0, 3, 1, 2), size=c_paired.shape[2:], mode=opt.upsample).permute(0, 2, 3, 1)
                 flow_norm = torch.cat(
@@ -347,7 +347,7 @@ def train(opt, train_loader, test_loader, val_loader, board, tocg, D):
 
                 # discriminator
                 with torch.no_grad():
-                    _, fake_segmap, _, _ = tocg(input1, input2)
+                    _, fake_segmap, _, _ = tocg(opt, input1, input2)
                 fake_segmap_softmax = torch.softmax(fake_segmap, 1)
 
                 # loss discriminator
@@ -466,7 +466,7 @@ def train(opt, train_loader, test_loader, val_loader, board, tocg, D):
 
                     # forward
                     flow_list, fake_segmap, warped_cloth_paired, warped_clothmask_paired = tocg(
-                        input1, input2)
+                        opt, input1, input2)
 
                     warped_cm_onehot = torch.FloatTensor(
                         (warped_clothmask_paired.detach().cpu().numpy() > 0.5).astype(np.double)).cuda()
